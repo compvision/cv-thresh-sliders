@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project(cv_thresh)
+add_executable(cv_thresh cv_thresh.cpp)
+find_package(OpenCV REQUIRED)
+target_link_libraries(cv_thresh ${OpenCV_LIBS})
