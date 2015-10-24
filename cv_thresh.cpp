@@ -2,24 +2,25 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 
-std::string path = "/home/agentg010/Pictures/awesomeface.png";
-
+// Global Variables
 cv::Mat hue;
 int minHue = 0;
 int maxHue = 0;
 
 // Do all the image processing
-void imageProcess(int, void* nop)
+void imageProcess(int, void*)
 {
-    cv::Mat threshLow;
-    cv::Mat threshHigh;
-    cv::threshold(hue, threshLow, minHue, 255, cv::THRESH_BINARY);
-    cv::threshold(hue, threshHigh, maxHue, 255, cv::THRESH_BINARY_INV);
-    cv::Mat threshed = threshLow & threshHigh;
+    using namespace cv;
 
-    cv::imshow("threshLow", threshLow);
-    cv::imshow("threshHigh", threshHigh);
-    cv::imshow("Thresholded", threshed);
+    Mat threshLow;
+    Mat threshHigh;
+    threshold(hue, threshLow, minHue, 255, THRESH_BINARY);
+    threshold(hue, threshHigh, maxHue, 255, THRESH_BINARY_INV);
+    Mat threshed = threshLow & threshHigh;
+
+    imshow("threshLow", threshLow);
+    imshow("threshHigh", threshHigh);
+    imshow("Thresholded", threshed);
 }
 
 int main(int argc, char* argv[])
@@ -29,24 +30,29 @@ int main(int argc, char* argv[])
         std::cout << "Usage: " << argv[0] << " <imgpath>\n";
         return 1;
     }
+
     cv::Mat img = cv::imread(argv[1]);
-    cv::GaussianBlur(img, img, cv::Size(3, 3), 0);
-    std::vector<cv::Mat> separated(3);
+
+    // Blur the image to smooth it out (especially with JPG's)
+    cv::GaussianBlur(img, img, cv::Size(3, 3), 1, 1);
 
     cv::imshow("Full", img);
 
+    // Convert to HSV
     cv::Mat cvted;
     cv::cvtColor(img, cvted, CV_BGR2HSV);
 
+    // Isolate the Hue Channel
+    std::vector<cv::Mat> separated(3);
     cv::split(cvted, separated);
     hue = separated.at(0).clone();
     
     cv::namedWindow("Thresholded", cv::WINDOW_NORMAL);
 
-    cv::createTrackbar("hueMin", "Thresholded", &minHue, 360, imageProcess);
-    cv::createTrackbar("hueMax", "Thresholded", &maxHue, 360, imageProcess);
+    cv::createTrackbar("hueMin", "Thresholded", &minHue, 255, imageProcess);
+    cv::createTrackbar("hueMax", "Thresholded", &maxHue, 255, imageProcess);
 
-    // Do the image processing once initially
+    // Do the image processing once initially (parameters have no significance)
     imageProcess(1, NULL);
 
     cv::waitKey(0);
