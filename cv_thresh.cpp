@@ -7,8 +7,8 @@ cv::Mat hue;
 int minHue = 0;
 int maxHue = 0;
 
-// Do all the image processing
-void imageProcess(int, void*)
+// Do all the thresholding
+void threshold(int, void*)
 {
     using namespace cv;
 
@@ -42,18 +42,18 @@ int main(int argc, char* argv[])
     cv::Mat cvted;
     cv::cvtColor(img, cvted, CV_BGR2HSV);
 
-    // Isolate the Hue Channel
+    // Isolate the Hue Channel, and store in global variable
     std::vector<cv::Mat> separated(3);
     cv::split(cvted, separated);
     hue = separated.at(0).clone();
     
     cv::namedWindow("Thresholded", cv::WINDOW_NORMAL);
 
-    cv::createTrackbar("hueMin", "Thresholded", &minHue, 255, imageProcess);
-    cv::createTrackbar("hueMax", "Thresholded", &maxHue, 255, imageProcess);
+    cv::createTrackbar("hueMin", "Thresholded", &minHue, 255, threshold);
+    cv::createTrackbar("hueMax", "Thresholded", &maxHue, 255, threshold);
 
     // Do the image processing once initially (parameters have no significance)
-    imageProcess(1, NULL);
+    threshold(1, NULL);
 
     cv::waitKey(0);
 
