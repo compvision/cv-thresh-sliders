@@ -1,0 +1,6 @@
+{
+  "name": "CV Thresh Sliders",
+  "tagline": "A small interactive CV program that uses sliders for real-time thresholding",
+  "body": "# CV_Thresh_Sliders\r\n## An interactive program that demonstrates OpenCV thresholding by using sliders\r\n\r\n## System Requirements and libraries\r\n* GNU/Linux\r\n* OpenCV Libraries (2.4 or later)\r\n* CMake (2.8 or Later)\r\n\r\n## Compiling\r\nCMake is the preferred method of compilation. On a Linux system, open a Terminal and run the following:\r\n```\r\n$ mkdir build\r\n$ cd build\r\n$ cmake ..\r\n$ make\r\n```\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
