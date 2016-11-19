@@ -76,7 +76,11 @@ int main(int argc, char* argv[])
         if (arg1 != "-d") {
             std::cout << "Normal Init";
             img = imread(argv[1]);
-            run(img);
+            while(true) {
+                run(img);
+                if (waitKey(30) >= 0){break;}    
+            }
+            //run(img);
         }
         else {
             error = true;
