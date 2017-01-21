@@ -5,8 +5,11 @@ using namespace cv;
 
 // Global Variables
 Mat hue;
+Mat val;
 int minHue = 0;
 int maxHue = 0;
+int maxVal = 0;
+int minVal = 0;
 std::string windowId = "CV LIVE THRESHOLDING DEMO";
 
 // Do all the thresholding
@@ -16,9 +19,20 @@ void threshold(int, void*)
 
     Mat threshLow;
     Mat threshHigh;
+    Mat hueResult;
+    Mat valResult;
+
+//hue
     threshold(hue, threshLow, minHue, 255, THRESH_BINARY);
     threshold(hue, threshHigh, maxHue, 255, THRESH_BINARY_INV);
-    Mat threshed = threshLow & threshHigh;
+    hueResult = threshLow & threshHigh;    
+
+//value
+    threshold(val, threshLow, minVal, 255, THRESH_BINARY);
+    threshold(val, threshHigh, maxVal, 255, THRESH_BINARY_INV);
+    valResult = threshLow & threshHigh;
+
+    Mat threshed = hueResult & valResult;
 
     //imshow("threshLow", threshLow);
     //imshow("threshHigh", threshHigh);
@@ -38,11 +52,14 @@ void run(Mat img) {
     std::vector<Mat> separated(3);
     split(cvted, separated);
     hue = separated.at(0).clone();
+    val = separated.at(2).clone();
 
     namedWindow(windowId, WINDOW_NORMAL);
 
     createTrackbar("hueMin", windowId, &minHue, 255, threshold);
     createTrackbar("hueMax", windowId, &maxHue, 255, threshold);
+    createTrackbar("valMin", windowId, &minVal, 255, threshold);
+    createTrackbar("valMax", windowId, &maxVal, 255, threshold);
     imshow(windowId, img);
     // Do the image processing once initially (parameters have no significance)
     threshold(1, NULL);
