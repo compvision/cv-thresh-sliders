@@ -10,6 +10,9 @@ int minHue = 0;
 int maxHue = 0;
 int maxVal = 0;
 int minVal = 0;
+int minSat = 0;
+int maxSat = 0;
+
 std::string windowId = "CV LIVE THRESHOLDING DEMO";
 
 // Do all the thresholding
@@ -21,18 +24,24 @@ void threshold(int, void*)
     Mat threshHigh;
     Mat hueResult;
     Mat valResult;
+    Mat satResult;
 
 //hue
     threshold(hue, threshLow, minHue, 255, THRESH_BINARY);
     threshold(hue, threshHigh, maxHue, 255, THRESH_BINARY_INV);
-    hueResult = threshLow & threshHigh;    
+    hueResult = threshLow & threshHigh;
 
 //value
     threshold(val, threshLow, minVal, 255, THRESH_BINARY);
     threshold(val, threshHigh, maxVal, 255, THRESH_BINARY_INV);
     valResult = threshLow & threshHigh;
 
-    Mat threshed = hueResult & valResult;
+//saturation
+    threshold(val, threshLow, minSat, 255, THRESH_BINARY);
+    threshold(val, threshHigh, maxSat, 255, THRESH_BINARY_INV);
+    satResult = threshLow & threshHigh;
+
+    Mat threshed = hueResult & valResult & satResult;
 
     //imshow("threshLow", threshLow);
     //imshow("threshHigh", threshHigh);
@@ -60,6 +69,9 @@ void run(Mat img) {
     createTrackbar("hueMax", windowId, &maxHue, 255, threshold);
     createTrackbar("valMin", windowId, &minVal, 255, threshold);
     createTrackbar("valMax", windowId, &maxVal, 255, threshold);
+    createTrackbar("satMin", windowId, &minSat, 255, threshold);
+    createTrackbar("satMax", windowId, &maxSat, 255, threshold);
+
     imshow(windowId, img);
     // Do the image processing once initially (parameters have no significance)
     threshold(1, NULL);
@@ -95,7 +107,7 @@ int main(int argc, char* argv[])
             img = imread(argv[1]);
             while(true) {
                 run(img);
-                if (waitKey(30) >= 0){break;}    
+                if (waitKey(30) >= 0){break;}
             }
             //run(img);
         }
